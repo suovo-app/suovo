@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Suovo-MCP lets local AI agents use Suovo's support context and RAG workflow while people keep control of customer replies.">
+  <title>Suovo-MCP</title><link rel="icon" type="image/png" href="assets/suovo-icon-orange-128.png"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner"><a class="brand" href="index.html"><span class="brand-mark"><img src="assets/suovo-icon-orange-128.png" width="29" height="29" alt=""></span>Suovo <span class="brand-suffix">/ MCP</span></a><nav aria-label="Main navigation"><a aria-current="page" href="index.html">Overview</a><a href="connect.html">Connect</a><a href="tools.html">Tools</a><a href="security.html">Security</a><a href="compatibility.html">Compatibility</a><a href="faq.html">FAQ</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell" style="padding-top:0;padding-bottom:0"><p class="eyebrow">Local support tools · Suovo-MCP</p><h1>Let your AI client work with the support context already in Suovo.</h1><p class="hero-copy"><a href="https://suovo.app">Suovo</a> brings your customer conversations and reference material into one desktop app. Suovo-MCP lets a local AI client use that context to find information and prepare replies, while you stay in charge of the final response.</p><div class="actions"><a class="button" href="connect.html">Connect a client</a><a class="button secondary" href="tools.html">Explore the tools</a></div></div></section>
+  <div class="shell">
+    <div class="notice"><strong>Runs locally; replies stay under your control.</strong> Suovo-MCP is available only while Suovo is open and requires a bearer token. It can add or update a queue proposal, but it cannot approve, send, deliver, or retry a reply.</div>
+    <section class="section"><h2>What MCP adds</h2><p class="lead">MCP is a standard way for an AI client to use another app’s tools. With Suovo-MCP, the client can search support context, use your knowledge base, and prepare reply proposals through Suovo instead of rebuilding that workflow in every prompt.</p><div class="grid">
+      <article class="card"><h3>Find the right conversation</h3><p>List, search, and inspect cached Gmail or Allegro support threads when you ask the client to do so.</p></article>
+      <article class="card"><h3>Ground a response</h3><p>Search indexed reference material and generate a citation-backed reply draft for a person to review.</p></article>
+      <article class="card"><h3>Keep people in the loop</h3><p>Save or update a proposal in Suovo’s shared Reply Review Queue. You handle review and any later delivery in Suovo’s UI.</p></article>
+    </div></section>
+    <section class="section"><h2>Why use it</h2><p class="lead">You can ask an agent to prepare a batch of reply proposals and then review them in Suovo. The agent calls Suovo directly for inbox context and knowledge retrieval, rather than spending tokens reconstructing that context or being told how to run the same retrieval steps again. The result is less repetitive prompting and more time for the cases that need your judgment.</p></section>
+    <section class="section"><h2>How Suovo-MCP works</h2><div class="diagram"><img src="assets/Suovo-MCP-diagram_en.png" alt="A local MCP client such as Codex or Claude Code uses Suovo-MCP to call the Suovo desktop app, which provides Gmail and Allegro integration, a local knowledge base and RAG, model interaction, draft generation, and batch proposal processing. Human review remains in Suovo’s Reply Review Queue."></div><p>Suovo-MCP runs locally with Suovo. The client automates use of Suovo’s tools; Suovo does the support-work heavy lifting. It does not give the client authority to send a reply.</p></section>
+    <section class="section"><h2>Getting started</h2><p class="lead">Open Settings in Suovo and enable MCP. If you use Codex or Claude Code, Suovo finds the usual configuration file and offers to install or update the connection. Other compatible clients can use the manual details shown in Settings.</p><p><a href="connect.html">Set up a client</a> · <a href="security.html">Security and privacy</a> · <a href="compatibility.html">Compatibility</a></p></section>
+    <section class="section"><h2>Start here</h2><div class="grid">
+      <article class="card"><h3>Connect</h3><p>Use the one-click Codex or Claude Code setup, or configure another local client manually.</p><p><a href="connect.html">Setup guide →</a></p></article>
+      <article class="card"><h3>Tool reference</h3><p>Inputs, effects, and return shapes for all Suovo-MCP tools.</p><p><a href="tools.html">Browse tools →</a></p></article>
+      <article class="card"><h3>FAQ</h3><p>Answers about local access, drafts, provider data, and common connection issues.</p><p><a href="faq.html">Read the FAQ →</a></p></article>
+    </div></section>
+  </div>
+</main>
+<footer><a href="https://suovo.app">Suovo</a><a href="../README.md">Release repository</a><a href="https://github.com/suovo-app/suovo/releases">Available builds</a></footer>
+</body></html>

@@ -1,17 +1,32 @@
 # Suovo
 
-Suovo is a local-first desktop assistant for ecommerce customer support. It connects support conversations and a local knowledge base to help create citation-backed draft replies.
+**Customer support drafting for ecommerce, with your knowledge base close at hand.**
 
-## Distribution
+Suovo is a desktop app that brings support conversations and local reference material together to help prepare citation-backed replies. It is currently pre-release; availability and release notes are listed on the Releases page.
 
-This repository hosts public Suovo release assets and updater metadata.
+[View available builds](../../releases) · [Product information](https://suovo.app) · [Suovo-MCP documentation source](site/index.html)
 
-Download the latest signed release from the [Releases](../../releases) page. macOS packages are notarized by Apple before publication.
+## What Suovo helps with
 
-## Support
+- Review customer conversations from connected support channels.
+- Search a local knowledge base for relevant policies and product information.
+- Prepare replies with citations for a person to inspect and edit.
+- Connect compatible local MCP clients to selected Suovo tools through an opt-in loopback endpoint.
 
-Visit <https://suovo.app> for more information.
+Suovo-MCP can read requested support data and create or revise proposals in the shared Reply Review Queue. It cannot authorize, send, deliver, or retry replies. Delivery, when available in the app, remains a separate app-controlled workflow.
 
-## License
+## Releases
 
-See the license and notices included with each release.
+Use [GitHub Releases](../../releases) to see available builds, release notes, and installation details. Check each release entry for the platforms and requirements it covers. The product is pre-release, and release assets do not by themselves indicate a production release.
+
+## Suovo-MCP documentation
+
+The documentation source in [`site/`](site/index.html) covers connection setup, the public tool reference, security and privacy, compatibility, and common questions. GitHub Pages deployment is configured in this repository; its public URL will be listed here after Pages is enabled and the first deployment succeeds. The endpoint is local to the running app and requires a bearer token from Suovo Settings.
+
+## Support and licensing
+
+Visit [suovo.app](https://suovo.app) for product information and support routes. License and third-party notices are included with applicable release packages.
+
+---
+
+Suovo is distributed under the terms included with each release package. See the release entry for the applicable notices.

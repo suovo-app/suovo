@@ -1,0 +1,1929 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "contract_version": "1.0.0",
+  "schema_dialect": "https://json-schema.org/draft/2020-12/schema",
+  "result_format": "structuredContent",
+  "result_envelope": {
+    "structured_content": "Successful tools return the declared output_schema as MCP structuredContent.",
+    "text_content": "A brief human-readable summary may accompany structuredContent; it is not a data format.",
+    "errors": "The success schemas apply only to successful calls. MCP/JSON-RPC errors are error responses, not structuredContent success objects."
+  },
+  "delivery_capabilities": [],
+  "tools": {
+    "generate_draft": {
+      "description": "Generate a citation-backed draft reply for a thread using the app's RAG + LLM. No side effects — nothing is sent. Requires a licensed tier.",
+      "input_fields": [
+        "k",
+        "message_ids",
+        "thread_id"
+      ],
+      "required_input_fields": [
+        "thread_id"
+      ],
+      "output_fields": [
+        "citation_sources",
+        "citations",
+        "draft",
+        "model",
+        "security",
+        "usage"
+      ],
+      "required_output_fields": [
+        "citation_sources",
+        "citations",
+        "draft",
+        "model",
+        "security",
+        "usage"
+      ],
+      "side_effects": "draft_generation_only",
+      "license_required": true,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "k": {
+            "description": "Number of knowledge chunks considered (default 5).",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "message_ids": {
+            "description": "Explicit message ids to answer; defaults to all customer messages\nafter the last support reply.",
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "thread_id": {
+            "description": "Thread to draft a reply for.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "thread_id"
+        ],
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/generate_draft/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "citation_sources": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "count": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "count"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "citations": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "heading": {
+                  "type": "string"
+                },
+                "index": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "score": {
+                  "type": "number"
+                },
+                "snippet": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "thread_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "index",
+                "source",
+                "heading",
+                "snippet",
+                "score",
+                "type",
+                "thread_id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "draft": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "security": {
+            "additionalProperties": false,
+            "properties": {
+              "input_warnings": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "output_warnings": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "safe": {
+                "type": "boolean"
+              },
+              "verification": {
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "issues": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "safe": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "safe",
+                      "issues"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "input_warnings",
+              "output_warnings",
+              "safe",
+              "verification"
+            ],
+            "type": "object"
+          },
+          "usage": {
+            "oneOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "completion_tokens": {
+                    "minimum": 0,
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "prompt_tokens": {
+                    "minimum": 0,
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "total_tokens": {
+                    "minimum": 0,
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "prompt_tokens",
+                  "completion_tokens",
+                  "total_tokens"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "draft",
+          "citations",
+          "citation_sources",
+          "model",
+          "usage",
+          "security"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Uses Suovo's retrieval and configured model provider; model use may consume quota or incur cost. It returns a draft for review and never sends a message. `citations[].type` and `citation_sources[].type` are extensible identifiers."
+      ],
+      "field_descriptions": {
+        "draft": "Generated reply text for human editing; this tool does not send it.",
+        "citations[].index": "One-based display index assigned to this citation.",
+        "citations[].source": "Citation source label.",
+        "citations[].heading": "Source heading, or empty if none.",
+        "citations[].snippet": "Passage excerpt supporting the draft.",
+        "citations[].score": "Retrieval relevance score.",
+        "citations[].type": "Extensible source-kind identifier, or null when no type is available.",
+        "citations[].thread_id": "Related thread identifier for conversation-derived citations, or null.",
+        "citation_sources[].type": "Extensible citation source-kind identifier.",
+        "citation_sources[].count": "Number of citations from this source kind.",
+        "model": "Configured model identifier used for generation.",
+        "usage": "Token usage reported by the model provider, or null when not reported.",
+        "usage.prompt_tokens": "Prompt tokens reported by the provider, or null.",
+        "usage.completion_tokens": "Completion tokens reported by the provider, or null.",
+        "usage.total_tokens": "Total tokens reported by the provider, or null.",
+        "security.input_warnings": "Input-safety findings; empty when none.",
+        "security.output_warnings": "Generated-output safety findings; empty when none.",
+        "security.safe": "Whether configured output checks found the draft safe.",
+        "security.verification": "Optional secondary verification result.",
+        "security.verification.safe": "Whether the verifier accepted the draft.",
+        "security.verification.issues": "Verifier findings; empty when none.",
+        "citations": "Source passages used to support the generated draft.",
+        "citation_sources": "Citation counts grouped by source kind.",
+        "security": "Safety checks and their results."
+      }
+    },
+    "get_thread": {
+      "description": "Get one thread with all messages (cached-first).",
+      "input_fields": [
+        "thread_id"
+      ],
+      "required_input_fields": [
+        "thread_id"
+      ],
+      "output_fields": [
+        "thread"
+      ],
+      "required_output_fields": [
+        "thread"
+      ],
+      "side_effects": "provider_read",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "thread_id": {
+            "description": "Non-empty thread identifier from `list_threads` or `search_threads` (maximum 512 characters).",
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "thread_id"
+        ],
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/get_thread/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "thread": {
+            "additionalProperties": false,
+            "properties": {
+              "account_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "from": {
+                "type": "string"
+              },
+              "from_cache": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "messages": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "body": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "date": {
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "sender_is_support": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "snippet": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "body",
+                    "snippet",
+                    "date",
+                    "sender_is_support"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "snippet": {
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "gmail",
+                  "allegro"
+                ],
+                "type": "string"
+              },
+              "stale": {
+                "type": "boolean"
+              },
+              "subject": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "subject",
+              "from",
+              "messages",
+              "snippet",
+              "source",
+              "account_id",
+              "from_cache",
+              "stale"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "thread"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Cache-first retrieval of a thread and its messages. `from_cache` and `stale` describe the returned data."
+      ],
+      "field_descriptions": {
+        "thread.id": "Provider thread identifier used to retrieve the conversation.",
+        "thread.subject": "Thread subject; Suovo uses “(no subject)” if absent.",
+        "thread.from": "Sender of the latest message; “unknown” when there are no messages.",
+        "thread.messages[].id": "Provider message identifier, or null when unavailable.",
+        "thread.messages[].body": "Full message body when cached/fetched, or null when unavailable.",
+        "thread.messages[].snippet": "Provider message preview, or null when unavailable.",
+        "thread.messages[].date": "Message timestamp normalized to UTC RFC 3339 milliseconds, or null.",
+        "thread.messages[].sender_is_support": "Whether Suovo identifies the sender as the support account, or null when unknown.",
+        "thread.snippet": "Preview of the latest message; empty when there are no messages.",
+        "thread.source": "Provider owning the thread: gmail or allegro.",
+        "thread.account_id": "Provider account identifier, or null when unavailable.",
+        "thread.from_cache": "Whether messages were returned from Suovo's local cache.",
+        "thread.stale": "Whether the local messages may be stale.",
+        "thread": "Requested conversation and cache freshness information.",
+        "thread.messages": "Messages in this conversation."
+      }
+    },
+    "get_thread_counts": {
+      "description": "Thread counts (total / visible).",
+      "input_fields": [],
+      "required_input_fields": [],
+      "output_fields": [
+        "after_date",
+        "total",
+        "visible"
+      ],
+      "required_output_fields": [
+        "after_date",
+        "total",
+        "visible"
+      ],
+      "side_effects": "local_read",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/get_thread_counts/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "after_date": {
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "total": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "visible": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "visible",
+          "after_date"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "`visible` counts cached threads within the configured date window; `total` counts all cached threads."
+      ],
+      "field_descriptions": {
+        "total": "Total cached thread count.",
+        "visible": "Cached thread count within the configured email start-date window.",
+        "after_date": "Configured start-date cutoff normalized to UTC RFC 3339 milliseconds, or null."
+      }
+    },
+    "hardware_info": {
+      "description": "Local hardware info (RAM, VRAM, platform).",
+      "input_fields": [],
+      "required_input_fields": [],
+      "output_fields": [
+        "platform",
+        "ram_gb",
+        "vram_gb"
+      ],
+      "required_output_fields": [
+        "platform",
+        "ram_gb",
+        "vram_gb"
+      ],
+      "side_effects": "local_read",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/hardware_info/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "platform": {
+            "enum": [
+              "macos",
+              "windows",
+              "linux"
+            ],
+            "type": "string"
+          },
+          "ram_gb": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "vram_gb": {
+            "minimum": 0,
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "ram_gb",
+          "vram_gb",
+          "platform"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "`vram_gb` is null when the operating system cannot report it."
+      ],
+      "field_descriptions": {
+        "ram_gb": "Installed system memory in gibibytes as reported by the operating system.",
+        "vram_gb": "Available graphics memory in gibibytes, or null when unavailable.",
+        "platform": "Operating-system family: macos, windows, or linux."
+      }
+    },
+    "list_accounts": {
+      "description": "Connected accounts: gmail auth status + marketplace (Allegro) accounts. Source of valid source/account_id values.",
+      "input_fields": [],
+      "required_input_fields": [],
+      "output_fields": [
+        "gmail",
+        "marketplace"
+      ],
+      "required_output_fields": [
+        "gmail",
+        "marketplace"
+      ],
+      "side_effects": "local_read",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/list_accounts/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "gmail": {
+            "additionalProperties": false,
+            "properties": {
+              "authenticated": {
+                "type": "boolean"
+              },
+              "cached_thread_count": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "linked": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "authenticated",
+              "cached_thread_count",
+              "linked"
+            ],
+            "type": "object"
+          },
+          "marketplace": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "cached_thread_count": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "display_name": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "is_active": {
+                  "type": "boolean"
+                },
+                "provider": {
+                  "enum": [
+                    "allegro"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "provider",
+                "display_name",
+                "is_active",
+                "cached_thread_count"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "gmail",
+          "marketplace"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Returns account identifiers and connection state used by source/account filters."
+      ],
+      "field_descriptions": {
+        "gmail.authenticated": "Whether Gmail authentication is currently valid.",
+        "gmail.cached_thread_count": "Number of Gmail threads currently cached.",
+        "gmail.linked": "Whether a Gmail account is linked in Suovo.",
+        "marketplace[].id": "Allegro account identifier used to filter or address that account.",
+        "marketplace[].provider": "Marketplace provider; currently allegro.",
+        "marketplace[].display_name": "Account label shown by Suovo.",
+        "marketplace[].is_active": "Whether Suovo has this account enabled.",
+        "marketplace[].cached_thread_count": "Number of threads cached for this account.",
+        "gmail": "Gmail link and authentication state.",
+        "marketplace": "Connected marketplace accounts."
+      }
+    },
+    "list_models": {
+      "description": "List models available from the configured LLM provider.",
+      "input_fields": [],
+      "required_input_fields": [],
+      "output_fields": [
+        "models"
+      ],
+      "required_output_fields": [
+        "models"
+      ],
+      "side_effects": "provider_model_lookup",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/list_models/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "models": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "models"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Queries the configured model provider; provider configuration or availability can cause an error."
+      ],
+      "field_descriptions": {
+        "models[].id": "Model identifier returned by the configured language-model provider.",
+        "models": "Models available from the configured provider."
+      }
+    },
+    "list_threads": {
+      "description": "List cached support threads (Gmail + Allegro), newest/most-urgent first. Filterable by needs_response/unread/processed/source/account.",
+      "input_fields": [
+        "account_id",
+        "limit",
+        "needs_response",
+        "offset",
+        "processed",
+        "source",
+        "unread"
+      ],
+      "required_input_fields": [],
+      "output_fields": [
+        "after_date",
+        "count",
+        "from_cache",
+        "threads"
+      ],
+      "required_output_fields": [
+        "after_date",
+        "count",
+        "from_cache",
+        "threads"
+      ],
+      "side_effects": "local_read",
+      "license_required": false,
+      "input_schema": {
+        "$defs": {
+          "ThreadSource": {
+            "enum": [
+              "gmail",
+              "allegro"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "description": "Filter by account identifier returned by `list_accounts`.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "limit": {
+            "description": "Max threads to return (default 50).",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "needs_response": {
+            "description": "If set, include only threads that still need a support response when true.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "offset": {
+            "description": "Pagination offset (default 0).",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "processed": {
+            "description": "If set, include only threads marked processed when true or unprocessed when false.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ThreadSource"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter by provider. Values are `gmail` or `allegro`."
+          },
+          "unread": {
+            "description": "If set, include only unread threads when true or read threads when false.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/list_threads/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "after_date": {
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "count": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "from_cache": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "threads": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "account_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "from": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "has_draft_reply": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "history_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "internal_date": {
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "is_unread": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "needs_response": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "snippet": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source": {
+                  "enum": [
+                    "gmail",
+                    "allegro",
+                    null
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "subject": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "history_id",
+                "snippet",
+                "subject",
+                "from",
+                "internal_date",
+                "is_unread",
+                "needs_response",
+                "has_draft_reply",
+                "source",
+                "account_id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "threads",
+          "count",
+          "from_cache",
+          "after_date"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Returns offset-paginated cached results. `count` is this page's length, not the total. An empty page ends iteration. Cache changes during paging can shift later pages. Defaults: limit 50, offset 0."
+      ],
+      "field_descriptions": {
+        "after_date": "RFC 3339 cutoff from the configured email start date; null if unavailable.",
+        "count": "Number of thread summaries in this returned page, not the total matching count.",
+        "from_cache": "Whether the page was read from Suovo's local cache; this tool returns true.",
+        "threads[].id": "Provider thread identifier, accepted by get_thread and drafting/proposal tools.",
+        "threads[].history_id": "Gmail history identifier when available; null for providers without one.",
+        "threads[].snippet": "Cached message preview, or null when unavailable.",
+        "threads[].subject": "Thread subject, or null when unavailable.",
+        "threads[].from": "Sender address or display text, or null when unavailable.",
+        "threads[].internal_date": "Latest cached message time normalized to UTC RFC 3339 milliseconds, or null.",
+        "threads[].is_unread": "Whether the thread is currently marked unread, or null when unknown.",
+        "threads[].needs_response": "Whether Suovo marks the thread as needing a support response, or null when unknown.",
+        "threads[].has_draft_reply": "Whether Suovo has a saved draft reply, or null when unknown.",
+        "threads[].source": "Provider owning the thread: gmail or allegro, or null when unknown.",
+        "threads[].account_id": "Provider account identifier, or null when unavailable.",
+        "threads": "Page of matching cached thread summaries."
+      }
+    },
+    "reply_review_get": {
+      "description": "Get one proposal's safe review metadata and refresh its provider thread context. This can update local queue freshness or staleness; it cannot send or deliver messages.",
+      "input_fields": [
+        "queue_item_id"
+      ],
+      "required_input_fields": [
+        "queue_item_id"
+      ],
+      "output_fields": [
+        "created_at",
+        "customer_label",
+        "freshness",
+        "id",
+        "origin",
+        "proposed_answer",
+        "proposed_body",
+        "provider",
+        "question",
+        "queue_item_id",
+        "revision",
+        "state",
+        "status",
+        "thread_context",
+        "thread_id"
+      ],
+      "required_output_fields": [
+        "created_at",
+        "customer_label",
+        "freshness",
+        "id",
+        "origin",
+        "proposed_answer",
+        "proposed_body",
+        "provider",
+        "question",
+        "queue_item_id",
+        "revision",
+        "state",
+        "status",
+        "thread_context",
+        "thread_id"
+      ],
+      "side_effects": "provider_read",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "queue_item_id": {
+            "description": "Non-empty queue item identifier returned by `reply_review_propose` or `reply_review_list` (maximum 512 characters).",
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue_item_id"
+        ],
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/reply_review_get/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "type": "string"
+          },
+          "customer_label": {
+            "type": "string"
+          },
+          "freshness": {
+            "enum": [
+              "current",
+              "stale",
+              "unverified"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "origin": {
+            "enum": [
+              "mcp",
+              "app"
+            ],
+            "type": "string"
+          },
+          "proposed_answer": {
+            "type": "string"
+          },
+          "proposed_body": {
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "gmail",
+              "allegro"
+            ],
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "queue_item_id": {
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "proposed",
+              "needs_review",
+              "ready",
+              "delivering",
+              "delivered",
+              "draft_created",
+              "failed",
+              "delivery_unknown",
+              "stale",
+              "dismissed"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "proposed",
+              "needs_review",
+              "ready",
+              "delivering",
+              "delivered",
+              "draft_created",
+              "failed",
+              "delivery_unknown",
+              "stale",
+              "dismissed"
+            ],
+            "type": "string"
+          },
+          "thread_context": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "body": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "date": {
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "sender_is_support": {
+                  "type": "boolean"
+                },
+                "sender": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "snippet": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "body",
+                "snippet",
+                "date",
+                "sender",
+                "sender_is_support"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "thread_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "queue_item_id",
+          "thread_id",
+          "revision",
+          "state",
+          "status",
+          "provider",
+          "customer_label",
+          "question",
+          "proposed_answer",
+          "created_at",
+          "origin",
+          "proposed_body",
+          "thread_context",
+          "freshness"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Refreshes provider thread context and may update local queue freshness or staleness. If live context is unavailable, the call may still succeed with `freshness: unverified` and an empty `thread_context`. It cannot send or deliver."
+      ],
+      "field_descriptions": {
+        "id": "Local queue item identifier.",
+        "queue_item_id": "Same queue item identifier, provided for direct use with other queue tools.",
+        "thread_id": "Provider thread identifier linked to the proposal.",
+        "revision": "Positive current proposal revision number.",
+        "state": "Current queue state.",
+        "status": "Current queue status.",
+        "provider": "Provider owning the source thread: gmail or allegro.",
+        "customer_label": "Display-safe customer label; currently the generic label Customer.",
+        "question": "Customer question captured when the proposal was created.",
+        "proposed_answer": "Current proposed reply body.",
+        "created_at": "Proposal creation time in UTC RFC 3339 format.",
+        "origin": "Proposal origin: mcp or app.",
+        "proposed_body": "Full current proposed reply body for review.",
+        "thread_context": "Provider messages used to assess whether the proposal is current.",
+        "thread_context[].id": "Provider message identifier, or null when unavailable.",
+        "thread_context[].body": "Full message body, or null when unavailable.",
+        "thread_context[].snippet": "Message preview, or null when unavailable.",
+        "thread_context[].date": "Message timestamp normalized to UTC RFC 3339 milliseconds, or null.",
+        "thread_context[].sender": "Message sender address or marketplace login, or null when unavailable.",
+        "thread_context[].sender_is_support": "Whether Suovo identifies the sender as the support account.",
+        "freshness": "current, stale, or unverified; unverified means live context could not be confirmed."
+      }
+    },
+    "reply_review_list": {
+      "description": "List safe metadata for items in Suovo's shared Reply Review Queue. This is read-only and cannot send or deliver messages.",
+      "input_fields": [
+        "limit",
+        "offset",
+        "status"
+      ],
+      "required_input_fields": [],
+      "output_fields": [
+        "items",
+        "next_offset"
+      ],
+      "required_output_fields": [
+        "items",
+        "next_offset"
+      ],
+      "side_effects": "local_read",
+      "license_required": false,
+      "input_schema": {
+        "$defs": {
+          "ReplyReviewStatus": {
+            "enum": [
+              "proposed",
+              "needs_review",
+              "ready",
+              "delivering",
+              "delivered",
+              "draft_created",
+              "failed",
+              "delivery_unknown",
+              "stale",
+              "dismissed"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "Maximum entries to return (default 50).",
+            "format": "uint32",
+            "maximum": 100,
+            "minimum": 1,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "offset": {
+            "description": "Number of entries to skip (default 0).",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ReplyReviewStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional queue status filter. Values: `proposed`, `needs_review`, `ready`, `delivering`, `delivered`, `draft_created`, `failed`, `delivery_unknown`, `stale`, `dismissed`."
+          }
+        },
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/reply_review_list/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "created_at": {
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+                  "type": "string"
+                },
+                "customer_label": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "origin": {
+                  "enum": [
+                    "mcp",
+                    "app"
+                  ],
+                  "type": "string"
+                },
+                "proposed_answer": {
+                  "type": "string"
+                },
+                "provider": {
+                  "enum": [
+                    "gmail",
+                    "allegro"
+                  ],
+                  "type": "string"
+                },
+                "question": {
+                  "type": "string"
+                },
+                "queue_item_id": {
+                  "type": "string"
+                },
+                "revision": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "state": {
+                  "enum": [
+                    "proposed",
+                    "needs_review",
+                    "ready",
+                    "delivering",
+                    "delivered",
+                    "draft_created",
+                    "failed",
+                    "delivery_unknown",
+                    "stale",
+                    "dismissed"
+                  ],
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "proposed",
+                    "needs_review",
+                    "ready",
+                    "delivering",
+                    "delivered",
+                    "draft_created",
+                    "failed",
+                    "delivery_unknown",
+                    "stale",
+                    "dismissed"
+                  ],
+                  "type": "string"
+                },
+                "thread_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "queue_item_id",
+                "thread_id",
+                "revision",
+                "state",
+                "status",
+                "provider",
+                "customer_label",
+                "question",
+                "proposed_answer",
+                "created_at",
+                "origin"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "next_offset": {
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "next_offset"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Offset pagination. `next_offset: null` means no next page; when present, reuse that offset unchanged. Proposal text is included in the result."
+      ],
+      "field_descriptions": {
+        "items[].id": "Local queue item identifier.",
+        "items[].queue_item_id": "Same queue item identifier, provided for direct use with other queue tools.",
+        "items[].thread_id": "Provider thread identifier linked to the proposal.",
+        "items[].revision": "Positive current proposal revision number.",
+        "items[].state": "Current queue state.",
+        "items[].status": "Current queue status.",
+        "items[].provider": "Provider owning the source thread: gmail or allegro.",
+        "items[].customer_label": "Display-safe customer label; currently the generic label Customer.",
+        "items[].question": "Customer question captured when the proposal was created.",
+        "items[].proposed_answer": "Current proposed reply body.",
+        "items[].created_at": "Proposal creation time in UTC RFC 3339 format.",
+        "items[].origin": "Proposal origin: mcp or app.",
+        "next_offset": "Offset to use unchanged for the next page, or null when there is no next page.",
+        "items": "Queue entries in this page."
+      }
+    },
+    "reply_review_propose": {
+      "description": "Create a proposal in Suovo's shared Reply Review Queue. This records a draft for human review and cannot send or deliver messages.",
+      "input_fields": [
+        "body",
+        "idempotency_key",
+        "thread_id"
+      ],
+      "required_input_fields": [
+        "body",
+        "idempotency_key",
+        "thread_id"
+      ],
+      "output_fields": [
+        "queue_item_id",
+        "revision",
+        "state"
+      ],
+      "required_output_fields": [
+        "queue_item_id",
+        "revision",
+        "state"
+      ],
+      "side_effects": "local_proposal_write",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "description": "Proposed reply body for human review; non-empty after trimming and at most 100,000 Unicode scalar values. Creating a proposal never sends it.",
+            "maxLength": 100000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotency_key": {
+            "description": "Caller-stable idempotency key matching `[A-Za-z0-9._:-]{1,128}`. Replaying the same request returns its existing result; reusing the key for a different request conflicts.",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$",
+            "type": "string"
+          },
+          "thread_id": {
+            "description": "Canonical thread id from the existing thread tools.",
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "thread_id",
+          "body",
+          "idempotency_key"
+        ],
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/reply_review_propose/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "queue_item_id": {
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "needs_review"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue_item_id",
+          "revision",
+          "state"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Persists a local proposal for human review; it cannot send or deliver. Idempotency keys match `[A-Za-z0-9._:-]{1,128}`. Replaying an identical request returns the existing result; a different request with the same key conflicts."
+      ],
+      "field_descriptions": {
+        "queue_item_id": "Identifier of the local queue item created or returned for this idempotent request.",
+        "revision": "Positive proposal revision number.",
+        "state": "Queue state after proposal creation; currently needs_review."
+      }
+    },
+    "reply_review_update": {
+      "description": "Create a new human-review proposal revision in Suovo's shared Reply Review Queue. This records content for review and cannot send or deliver messages.",
+      "input_fields": [
+        "body",
+        "idempotency_key",
+        "queue_item_id"
+      ],
+      "required_input_fields": [
+        "body",
+        "idempotency_key",
+        "queue_item_id"
+      ],
+      "output_fields": [
+        "queue_item_id",
+        "revision",
+        "state"
+      ],
+      "required_output_fields": [
+        "queue_item_id",
+        "revision",
+        "state"
+      ],
+      "side_effects": "local_proposal_write",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "description": "Replacement proposal body; non-empty after trimming and at most 100,000 Unicode scalar values. The sidecar creates a new immutable revision.",
+            "maxLength": 100000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "idempotency_key": {
+            "description": "Caller-stable idempotency key matching `[A-Za-z0-9._:-]{1,128}`. Replaying the same request returns its existing result; reusing the key for a different request conflicts.",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$",
+            "type": "string"
+          },
+          "queue_item_id": {
+            "description": "Non-empty queue item identifier to revise (maximum 512 characters).",
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue_item_id",
+          "body",
+          "idempotency_key"
+        ],
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/reply_review_update/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "queue_item_id": {
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "needs_review"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue_item_id",
+          "revision",
+          "state"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Persists a new immutable local proposal revision for human review; it cannot send or deliver. Idempotency behavior matches `reply_review_propose`."
+      ],
+      "field_descriptions": {
+        "queue_item_id": "Identifier of the updated local queue item.",
+        "revision": "Positive new immutable proposal revision number.",
+        "state": "Queue state after update; currently needs_review."
+      }
+    },
+    "search_knowledge": {
+      "description": "Semantic search over the local knowledge base; returns chunks with sources and scores.",
+      "input_fields": [
+        "k",
+        "query",
+        "thread_context"
+      ],
+      "required_input_fields": [
+        "query"
+      ],
+      "output_fields": [
+        "results"
+      ],
+      "required_output_fields": [
+        "results"
+      ],
+      "side_effects": "local_read",
+      "license_required": false,
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "k": {
+            "description": "Number of matching chunks to return (default 5).",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "query": {
+            "description": "What to look up in the knowledge base.",
+            "type": "string"
+          },
+          "thread_context": {
+            "description": "Optional thread text to bias retrieval.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/search_knowledge/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "results": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "heading": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "number"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "content",
+                "source",
+                "heading",
+                "score"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "An empty `results` array means no matching passages were returned."
+      ],
+      "field_descriptions": {
+        "results[].content": "Retrieved knowledge-base passage text.",
+        "results[].source": "Local knowledge source label, commonly a file name.",
+        "results[].heading": "Heading associated with the passage; empty if none.",
+        "results[].score": "Suovo's retrieval relevance score; compare results within a query.",
+        "results": "Retrieved knowledge passages ordered by relevance."
+      }
+    },
+    "search_threads": {
+      "description": "Search threads by subject, sender or snippet; same filters as list_threads.",
+      "input_fields": [
+        "account_id",
+        "limit",
+        "needs_response",
+        "offset",
+        "processed",
+        "query",
+        "source",
+        "unread"
+      ],
+      "required_input_fields": [
+        "query"
+      ],
+      "output_fields": [
+        "after_date",
+        "count",
+        "from_cache",
+        "threads"
+      ],
+      "required_output_fields": [
+        "after_date",
+        "count",
+        "from_cache",
+        "threads"
+      ],
+      "side_effects": "local_read",
+      "license_required": false,
+      "input_schema": {
+        "$defs": {
+          "ThreadSource": {
+            "enum": [
+              "gmail",
+              "allegro"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "description": "Filter by account identifier returned by `list_accounts`.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "limit": {
+            "description": "Maximum number of matching threads to return (default 50).",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "needs_response": {
+            "description": "If set, include only threads that still need a support response when true.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "offset": {
+            "description": "Number of matching threads to skip (default 0).",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "processed": {
+            "description": "If set, include only threads marked processed when true or unprocessed when false.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "query": {
+            "description": "Search string matched literally against cached subject, sender, and snippet fields.",
+            "type": "string"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ThreadSource"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter by provider. Values are `gmail` or `allegro`."
+          },
+          "unread": {
+            "description": "If set, include only unread threads when true or read threads when false.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object",
+        "$id": "urn:suovo:mcp:v1:tools/search_threads/input_schema"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "after_date": {
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "count": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "from_cache": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "threads": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "account_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "from": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "has_draft_reply": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "history_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "internal_date": {
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "is_unread": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "needs_response": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "snippet": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source": {
+                  "enum": [
+                    "gmail",
+                    "allegro",
+                    null
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "subject": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "history_id",
+                "snippet",
+                "subject",
+                "from",
+                "internal_date",
+                "is_unread",
+                "needs_response",
+                "has_draft_reply",
+                "source",
+                "account_id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "threads",
+          "count",
+          "from_cache",
+          "after_date"
+        ],
+        "type": "object"
+      },
+      "semantics": [
+        "Searches cached subject, sender, and snippet fields and returns offset-paginated results. `count` is this page's length, not the total. An empty page ends iteration; cache changes can shift later pages. Defaults: limit 50, offset 0."
+      ],
+      "field_descriptions": {
+        "after_date": "RFC 3339 cutoff from the configured email start date; null if unavailable.",
+        "count": "Number of matching thread summaries in this returned page, not the total matching count.",
+        "from_cache": "Whether cache status is known; null when the search result does not report it.",
+        "threads[].id": "Provider thread identifier, accepted by get_thread and drafting/proposal tools.",
+        "threads[].history_id": "Gmail history identifier when available; null for providers without one.",
+        "threads[].snippet": "Cached message preview, or null when unavailable.",
+        "threads[].subject": "Thread subject, or null when unavailable.",
+        "threads[].from": "Sender address or display text, or null when unavailable.",
+        "threads[].internal_date": "Latest cached message time normalized to UTC RFC 3339 milliseconds, or null.",
+        "threads[].is_unread": "Whether the thread is currently marked unread, or null when unknown.",
+        "threads[].needs_response": "Whether Suovo marks the thread as needing a support response, or null when unknown.",
+        "threads[].has_draft_reply": "Whether Suovo has a saved draft reply, or null when unknown.",
+        "threads[].source": "Provider owning the thread: gmail or allegro, or null when unknown.",
+        "threads[].account_id": "Provider account identifier, or null when unavailable.",
+        "threads": "Page of thread summaries matching the query and filters."
+      }
+    }
+  }
+}
