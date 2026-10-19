@@ -4,7 +4,7 @@
 
 Suovo is a desktop app that brings support conversations and local reference material together to help prepare citation-backed replies. It is currently pre-release; availability and release notes are listed on the Releases page.
 
-[View available builds](../../releases) · [Product information](https://suovo.app) · [Suovo-MCP documentation source](site/index.html)
+[View available builds](../../releases) · [Product information](https://suovo.app) · [Suovo-MCP documentation source](https://suovo-app.github.io/suovo/)
 
 ## What Suovo helps with
 
@@ -21,7 +21,7 @@ Use [GitHub Releases](../../releases) to see available builds, release notes, an
 
 ## Suovo-MCP documentation
 
-The documentation source in [`site/`](site/index.html) covers connection setup, the public tool reference, security and privacy, compatibility, and common questions. GitHub Pages deployment is configured in this repository; its public URL will be listed here after Pages is enabled and the first deployment succeeds. The endpoint is local to the running app and requires a bearer token from Suovo Settings.
+The [Suovo-MCP documentation](https://suovo-app.github.io/suovo/) covers connection setup, the public tool reference, security and privacy, compatibility, and common questions. The endpoint is local to the running app and requires a bearer token from Suovo Settings.
 
 ## Support and licensing
 
